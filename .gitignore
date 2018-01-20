@@ -5,3 +5,4 @@ xml.xml
 xsd/
 documentor.php
 test.csv
+composer.lock
