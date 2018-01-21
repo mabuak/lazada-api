@@ -1,6 +1,5 @@
 # lazada-api
 
-# Amazon Marketplace Webservices
 [![Latest Stable Version](https://poser.pugx.org/ramadhan/lazada-api/v/stable)](https://packagist.org/packages/ramadhan/lazada-api) [![Latest Unstable Version](https://poser.pugx.org/ramadhan/lazada-api/v/unstable)](https://packagist.org/packages/ramadhan/lazada-api) [![License](https://poser.pugx.org/ramadhan/lazada-api/license)](https://packagist.org/packages/ramadhan/lazada-api) [![Total Downloads](https://poser.pugx.org/ramadhan/lazada-api/downloads)](https://packagist.org/packages/ramadhan/lazada-api)
 
 Interaction with the lazada api for seller
