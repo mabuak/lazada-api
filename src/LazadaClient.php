@@ -31,14 +31,14 @@ class LazadaClient {
 			}
 		}
 		
-		$required_keys = [
+		$requiredKeys = [
 			'UserID',
 			'ApiKey',
 			'ApiHost',
 			'Format',
 		];
 		
-		foreach ( $required_keys as $key ) {
+		foreach ( $requiredKeys as $key ) {
 			if ( is_null( $this->config[ $key ] ) ) {
 				throw new Exception( 'Required field ' . $key . ' is not set' );
 			}
@@ -108,7 +108,7 @@ class LazadaClient {
 	 *
 	 * @return array|mixed|string
 	 */
-	private function request( $query, $method, $body = null) {
+	private function request( $query, $method, $body = null ) {
 		$parameters = $this->parameters( $query );
 		
 		// Build Query String
@@ -163,6 +163,71 @@ class LazadaClient {
 	 */
 	public function GetBrands( $limit = 100, $offset = 0 ) {
 		$response = $this->request( array( 'Action' => 'GetBrands', 'Limit' => $limit, 'Offset' => $offset ), 'GET' );
+		
+		if ( isset( $response['Head']['ErrorMessage'] ) ) {
+			throw new Exception( $response['Head']['ErrorMessage'] );
+		}
+		
+		return $response['Body'];
+	}
+	
+	/**
+	 * A method to Get Category Tree
+	 *
+	 * @return mixed
+	 * @throws Exception
+	 */
+	public function GetCategoryTree() {
+		$response = $this->request( array( 'Action' => 'GetCategoryTree' ), 'GET' );
+		
+		if ( isset( $response['Head']['ErrorMessage'] ) ) {
+			throw new Exception( $response['Head']['ErrorMessage'] );
+		}
+		
+		return $response['Body'];
+	}
+	
+	/**
+	 * A method to Get Category Attributes By PrimaryCategory
+	 *
+	 * @param $primaryCategory
+	 *
+	 * @return mixed
+	 * @throws Exception
+	 */
+	public function GetCategoryAttributes( $primaryCategory ) {
+		$response = $this->request( array( 'Action' => 'GetCategoryAttributes', 'PrimaryCategory' => $primaryCategory ), 'GET' );
+		
+		if ( isset( $response['Head']['ErrorMessage'] ) ) {
+			throw new Exception( $response['Head']['ErrorMessage'] );
+		}
+		
+		return $response['Body'];
+	}
+	
+	/**
+	 * A method to Get Products
+	 *
+	 * @param array $parameters
+	 *
+	 * @return mixed
+	 * @throws Exception
+	 */
+	public function GetProducts( $parameters = [] ) {
+		
+		$acceptKey = array( 'CreatedAfter', 'CreatedBefore', 'UpdatedAfter', 'UpdatedBefore', 'Search', 'Filter', 'Limit', 'Options', 'Offset' );
+		
+		$requestParameter = array( 'Action' => 'GetProducts' );
+		
+		foreach ( $parameters as $key => $parameter ) {
+			if ( in_array( $key, $acceptKey ) ) {
+				$requestParameter[ $key ] = $parameter;
+			} else {
+				throw new Exception( 'We don\'t accept the ' . $key . ' parameter' );
+			}
+		}
+		
+		$response = $this->request( $requestParameter, 'GET' );
 		
 		if ( isset( $response['Head']['ErrorMessage'] ) ) {
 			throw new Exception( $response['Head']['ErrorMessage'] );
