@@ -9,6 +9,7 @@ namespace ramadhan;
 
 use Exception;
 use GuzzleHttp\Client;
+use Spatie\ArrayToXml\ArrayToXml;
 
 class LazadaClient {
 	
@@ -153,6 +154,18 @@ class LazadaClient {
 	}
 	
 	/**
+	 * Convert an array to xml
+	 *
+	 * @param $array array to convert
+	 * @param $customRoot [$customRoot = 'AmazonEnvelope']
+	 *
+	 * @return sting
+	 */
+	private function arrayToXml( array $array, $customRoot = 'Request' ) {
+		return ArrayToXml::convert( $array, $customRoot );
+	}
+	
+	/**
 	 * A method to Get A Brands
 	 *
 	 * @param int $limit
@@ -164,11 +177,7 @@ class LazadaClient {
 	public function GetBrands( $limit = 100, $offset = 0 ) {
 		$response = $this->request( array( 'Action' => 'GetBrands', 'Limit' => $limit, 'Offset' => $offset ), 'GET' );
 		
-		if ( isset( $response['Head']['ErrorMessage'] ) ) {
-			throw new Exception( $response['Head']['ErrorMessage'] );
-		}
-		
-		return $response['Body'];
+		return $response;
 	}
 	
 	/**
@@ -180,11 +189,7 @@ class LazadaClient {
 	public function GetCategoryTree() {
 		$response = $this->request( array( 'Action' => 'GetCategoryTree' ), 'GET' );
 		
-		if ( isset( $response['Head']['ErrorMessage'] ) ) {
-			throw new Exception( $response['Head']['ErrorMessage'] );
-		}
-		
-		return $response['Body'];
+		return $response;
 	}
 	
 	/**
@@ -198,11 +203,7 @@ class LazadaClient {
 	public function GetCategoryAttributes( $primaryCategory ) {
 		$response = $this->request( array( 'Action' => 'GetCategoryAttributes', 'PrimaryCategory' => $primaryCategory ), 'GET' );
 		
-		if ( isset( $response['Head']['ErrorMessage'] ) ) {
-			throw new Exception( $response['Head']['ErrorMessage'] );
-		}
-		
-		return $response['Body'];
+		return $response;
 	}
 	
 	/**
@@ -229,11 +230,72 @@ class LazadaClient {
 		
 		$response = $this->request( $requestParameter, 'GET' );
 		
-		if ( isset( $response['Head']['ErrorMessage'] ) ) {
-			throw new Exception( $response['Head']['ErrorMessage'] );
-		}
-		
-		return $response['Body'];
+		return $response;
 	}
 	
+	/**
+	 * A method to Create Products
+	 *
+	 * @param $xmlContent
+	 *
+	 * @return mixed
+	 */
+	public function CreateProduct( $xmlContent ) {
+		$response = $this->request( array( 'Action' => 'CreateProduct' ), 'POST', $xmlContent );
+		
+		return $response;
+	}
+	
+	/**
+	 * A method to Get Response
+	 *
+	 * @param $requestId
+	 *
+	 * @return array|mixed|string
+	 */
+	public function GetResponse( $requestId ) {
+		$xmlContent = $this->arrayToXml( [ 'RequestId' => $requestId ] );
+		
+		$response = $this->request( array( 'Action' => 'GetResponse' ), 'POST', $xmlContent );
+		
+		return $response;
+	}
+	
+	/**
+	 * A method to Migrate Images
+	 *
+	 * @param array $imagesUrl
+	 *
+	 * @return mixed
+	 * @throws Exception
+	 */
+	public function MigrateImages( $imagesUrl = array() ) {
+		
+		if ( count( $imagesUrl ) > 8 ) {
+			throw new Exception( 'Maximum amount of Image Urls\'s for this call is 8' );
+		}
+		
+		foreach ( $imagesUrl as $imageUrl ) {
+			$images['Url'][] = $imageUrl;
+		}
+		
+		$xmlContent = $this->arrayToXml( [ 'Images' => $images ] );
+		
+		$response = $this->request( array( 'Action' => 'MigrateImages' ), 'POST', $xmlContent );
+		
+		return $response;
+	}
+	
+	/**
+	 * A method to Set Images
+	 *
+	 * @param $xmlContent
+	 *
+	 * @return array|mixed|string
+	 */
+	public function SetImages( $xmlContent ) {
+		$response = $this->request( array( 'Action' => 'SetImages' ), 'POST', $xmlContent );
+		
+		return $response;
+	}
 }

@@ -21,18 +21,21 @@ $lazada = new ramadhan\LazadaClient( [
 ```
 
 ### Get products
-Use this call to get all or a range of products.
-
-To get the parameters, you can check this link
-https://lazada-sellercenter.readme.io/docs/getproducts
-
 ```php
+// Use this call to get all or a range of products.
 // $parameters = array('Limit' => 20, 'Offset' => 0)
 $lazada->GetProducts($parameters = array());
 ```
 
+### Create product
+```php
+// Use this call to create products.
+$lazada->CreateProduct($xmlContent);
+```
+
 ### Available methods
 View source for detailed argument description.
+All methods starting with an uppercase character are also documented in the [Lazada API documentation](https://lazada-sellercenter.readme.io/)
 
 ```php
 // Use this call to retrieve all product brands in the lazada system.
@@ -45,4 +48,14 @@ $lazada->GetCategoryTree();
 // It will also display attributes for TaxClass, with their possible values listed as options.
 // primaryCategory is Identifier of the category for which the caller wants the list of attributes.
 $lazada->GetCategoryAttributes($primaryCategory);
+
+//Use this call to get the returned information from the system for the UploadImages and MigrateImages API.
+$lazada->GetResponse($requestId);
+
+//Use this call to migrate multiple images from an external site to Lazada site
+$lazada->MigrateImages($imagesUrl);
+
+//Use this call to set the images for an existing product by associating one or more image URLs with it
+$lazada->SetImages($xmlContent);
+
 ```
