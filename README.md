@@ -24,7 +24,7 @@ $lazada = new ramadhan\LazadaClient( [
 ```php
 // Use this call to get all or a range of products.
 // $parameters = array('Limit' => 20, 'Offset' => 0)
-$lazada->GetProducts($parameters = array());
+$lazada->GetProducts($parameters = []);
 ```
 
 ### Create product
@@ -57,5 +57,23 @@ $lazada->MigrateImages($imagesUrl);
 
 //Use this call to set the images for an existing product by associating one or more image URLs with it
 $lazada->SetImages($xmlContent);
+
+//Use this call to update attributes or SKUs of an existing product.
+$lazada->UpdateProduct($xmlContent);
+
+//Use this call to remove an existing product.
+$lazada->RemoveProduct($sellerSku = []);
+
+//Use this call to get the customer details for a range of orders.
+$lazada->GetOrders($parameters = []);
+
+//Use this call to get the list of items for a single order.
+$lazada->GetOrder($orderId);
+
+//Use this call to get the item information of an order.
+$lazada->GetOrderItems($orderId);
+
+
+
 
 ```

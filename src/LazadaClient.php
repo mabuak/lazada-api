@@ -159,7 +159,7 @@ class LazadaClient {
 	 * @param $array array to convert
 	 * @param $customRoot [$customRoot = 'AmazonEnvelope']
 	 *
-	 * @return sting
+	 * @return string
 	 */
 	private function arrayToXml( array $array, $customRoot = 'Request' ) {
 		return ArrayToXml::convert( $array, $customRoot );
@@ -247,6 +247,44 @@ class LazadaClient {
 	}
 	
 	/**
+	 * A method to Update Products
+	 *
+	 * @param $xmlContent
+	 *
+	 * @return mixed
+	 */
+	public function UpdateProduct( $xmlContent ) {
+		$response = $this->request( array( 'Action' => 'UpdateProduct' ), 'POST', $xmlContent );
+		
+		return $response;
+	}
+	
+	/**
+	 * A method to Remove Products
+	 *
+	 * @param array $sellerSku
+	 *
+	 * @return mixed
+	 * @throws Exception
+	 */
+	public function RemoveProduct( $sellerSku = array() ) {
+		
+		if ( count( $sellerSku ) > 100 ) {
+			throw new Exception( 'Maximum amount of SKU\'s for this call is 100' );
+		}
+		
+		foreach ( $sellerSku as $sku ) {
+			$skuList['Skus']['Sku']['SellerSku'][] = $sku;
+		}
+		
+		$xmlContent = $this->arrayToXml( [ 'Product' => $skuList ] );
+		
+		$response = $this->request( array( 'Action' => 'RemoveProduct' ), 'POST', $xmlContent );
+		
+		return $response;
+	}
+	
+	/**
 	 * A method to Get Response
 	 *
 	 * @param $requestId
@@ -295,6 +333,64 @@ class LazadaClient {
 	 */
 	public function SetImages( $xmlContent ) {
 		$response = $this->request( array( 'Action' => 'SetImages' ), 'POST', $xmlContent );
+		
+		return $response;
+	}
+	
+	/**
+	 * A method to Get Orders
+	 *
+	 * @param array $parameters
+	 *
+	 * @return mixed
+	 * @throws Exception
+	 */
+	public function GetOrders( $parameters = [] ) {
+		$acceptKey = array( 'CreatedAfter', 'CreatedBefore', 'UpdatedAfter', 'UpdatedBefore', 'Search', 'Filter', 'Limit', 'Offset', 'Status', 'SortBy', 'SortDirection' );
+		
+		$requestParameter = array( 'Action' => 'GetOrders' );
+		
+		foreach ( $parameters as $key => $parameter ) {
+			if ( in_array( $key, $acceptKey ) ) {
+				$requestParameter[ $key ] = $parameter;
+			} else {
+				throw new Exception( 'We don\'t accept the ' . $key . ' parameter' );
+			}
+		}
+		
+		$response = $this->request( $requestParameter, 'GET' );
+		
+		return $response;
+	}
+	
+	/**
+	 * A method to Get Order
+	 *
+	 * @param $orderId
+	 *
+	 * @return mixed
+	 */
+	public function GetOrder( $orderId ) {
+		
+		$requestParameter = array( 'Action' => 'GetOrder', 'OrderId' => $orderId );
+		
+		$response = $this->request( $requestParameter, 'GET' );
+		
+		return $response;
+	}
+	
+	/**
+	 * A method to Get Order Items
+	 *
+	 * @param $orderId
+	 *
+	 * @return mixed
+	 */
+	public function GetOrderItems( $orderId ) {
+		
+		$requestParameter = array( 'Action' => 'GetOrderItems', 'OrderId' => $orderId );
+		
+		$response = $this->request( $requestParameter, 'GET' );
 		
 		return $response;
 	}
