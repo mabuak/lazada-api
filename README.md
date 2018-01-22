@@ -6,7 +6,7 @@ Interaction with the lazada api for seller
 
 ### Installation:
 ```bash
-$ composer require ramadhan/lazada-api:dev-master
+$ composer require ramadhan/lazada-api
 ```
 
 ### Initiate the client
